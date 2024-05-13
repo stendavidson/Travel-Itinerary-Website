@@ -8,18 +8,22 @@ point for a Weather Forecast entry.
 """
 class Weather :
 
-    def __init__(self, date_time : datetime, avg_temp : float, temp_min : float, temp_max : float, \
-                 feels_like : float, humidity : float, description : str, wind_speed : float, \
-                 rain : float, visibility : int) -> None :
+    def __init__(self, date_time : datetime , current_temp : float | None,\
+                 min_temp : float | None, max_temp : float | None, feels_like : float | None,\
+                 humidity : float | None, description : str | None,wind_speed : float | None,\
+                 rain_prob : float | None, rain : float | None, visibility : int | None) -> None :
 
         self.date_time : datetime = date_time
-        self.avg_temp : float = avg_temp
-        self.temp_min : float = temp_min
-        self.temp_max : float = temp_max
+        self.current_temp : float = current_temp
+        self.min_temp : float = min_temp
+        self.max_temp : float = max_temp
         self.feels_like : float = feels_like
         self.humidity : float = humidity
         self.description : str = description
         self.wind_speed : float = wind_speed
+        self.rain_prob : float = rain_prob
         self.rain : float = rain
         self.visibility : int = visibility
 
+
+        

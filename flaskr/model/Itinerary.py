@@ -2,6 +2,7 @@ from exceptions.RepeatLocationException import RepeatLocationException
 from exceptions.LocationKeyException import LocationKeyException
 from collections import OrderedDict
 
+
 # The Itinerary class encapsulates Location information.
 class Itinerary :
 
@@ -44,5 +45,28 @@ class Itinerary :
         else :
         
             self.coordinates[location] = coordinates
+
+    
+    def __contains__(self, location : str) -> bool :
+
+        return (location in self.coordinates)
+    
+
+    def __len__(self) -> int :
+
+        return self.coordinates.__len__()
+    
+
+    def __iter__(self) :
+
+        return self.coordinates.__iter__()
+
+
+
+
+    
+
+
+
 
     
