@@ -546,7 +546,7 @@ def homepage_router() -> str:
         str: a html page to be rendered.
     """
 
-    return render_template("index.html")
+    return render_template("index.html", api_key=GOOGLE_KEY)
 
 
 # This function routes the user to the main / home page of the website.
