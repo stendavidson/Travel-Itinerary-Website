@@ -1,0 +1,103 @@
+#map{
+    min-height: calc(85vh - 4px);
+    width: calc(75% - 4px);
+    z-index: 1;
+}
+
+#itinerary-selection{
+    min-height: calc(85vh - 4px);
+    max-height: calc(85vh - 4px);
+    width: max(25%, 350px);
+    border-left: 2px solid white;
+    display: flex;
+    flex-direction: column;
+    justify-content: baseline;
+    align-items: center;
+    overflow: auto;
+}
+
+#itinerary-list{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: baseline;
+    align-items: center;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.weather-marker{
+    width: max(10vw, 100px);
+    padding: max(1vh, 10px) max(1vw, 15px);
+    border-radius: min(1vh, 1vw, 10px);
+    background-color: rgb(0, 100, 231);
+    color: white;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;  
+}
+
+.markerBox{
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;  
+    align-items: center;  
+}
+
+.weather-marker p{
+    margin-top: max(0.5vh, 5px);
+    font-size: min(max(calc(0.45*1.5vw), 1.5vh), 13px);
+}
+
+.down-arrow{
+    margin-top: -5px;
+    width: 0;
+    height: 0;
+    border-right: 7px solid transparent;
+    border-left: 7px solid transparent;
+    border-top: 15px solid rgb(0, 100, 231);
+}
+
+#itinerary-title{
+    margin: min(max(calc(0.45*4vw), 4vh), 40px);
+    color: white;
+    border-bottom: 4px solid white
+}
+
+.itinerary-container{
+    width: calc(100% - 6px);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.itinerary-button{
+    height: min(6vh, calc(0.45*6vw), 20px);
+    margin: 2px 0 30px 0;
+    padding: max(2vw, 30px);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(80, 80, 80);
+    color: white;
+    border-radius: min(1vh, 1vw, 10px);
+    overflow: hidden;
+}
+
+.itinerary-button:hover{
+    background-color: rgb(100, 100, 100);
+    cursor: pointer;
+}
+
+.itinerary-name{
+    max-width: 10vw;
+    flex-grow: 2;
+}
+
+.delete-itinerary{
+    max-width: 4vw;
+    flex-grow: 1;
+}

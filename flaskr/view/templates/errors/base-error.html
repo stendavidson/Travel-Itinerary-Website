@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/error.css')}}">
+{% endblock %}
+
+{% block main_page %}
+    <main>
+        <a href="/index">
+            <img id="home" src="{{url_for('static', filename='images/home.png')}}" alt="A home icon, when pressed it redirects the user back to the website's homepage">
+            <h2>Home</h2>
+        </a>
+        <img id="error" src="{{url_for('static', filename='images/error.png')}}" alt="An error icon">
+        <h1>{% block error_description %}{% endblock %}</h1>
+    </main>
+{% endblock %}

@@ -1,0 +1,81 @@
+#form-wrapper{
+    margin: 50px 0; 
+    width: 70%;
+    background-color: lightgrey;
+    border: 2px solid white;
+    padding: 30px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#itinerary-form{
+    width: 100%;
+    color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#itinerary-name{
+    width: 85%;
+}
+
+.form-section{
+    height: max(10vh, 60px);
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.input-component{
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+}
+
+input[type=text], input[type=number]{
+    font-size: max(1.6vh, calc(0.45 * 1.6vw), 16px);
+    padding-left: 10px;
+    height: 40px;
+    border: none;
+}
+
+input[type=text]:invalid, input[type=number]:invalid{
+    border: 2px solid rgb(255, 63, 63);
+}
+
+label{
+    font-size: max(1.6vh, calc(0.45 * 1.6vw), 16px);
+    margin-bottom: 2px;
+}
+
+.form-button{
+    padding: max(2vh, 15px) max(2vw, 30px);
+    border-radius: max(3vh, 40px);
+    color: white;
+    background-color: black;
+    text-decoration: none;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: max(1.6vh, calc(0.45 * 1.6vw), 16px);
+    height: 50px;
+}
+
+.form-button:hover{
+    background-color: rgb(60, 60, 60);
+}
+
+.input-component p{
+    position: relative;
+    top: 2px;
+    color: red;
+    font-size: 10px;
+    display: none;
+}

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta lang="en">
+        <meta charset="utf-8">
+        <meta name="description" content="{% block page_description %}{% endblock %}">
+        <title>England's Trails & Tales | {% block title %}{% endblock %}</title>
+        <link rel="icon" type="image/x-icon" href="{{url_for('static', filename='images/favicon.ico')}}">
+        {% block head %}{% endblock %}
+    </head>
+    <body>
+        {# The website header #}
+        {% block header %}
+        {% endblock %}
+        
+        {# The main body of content #}
+        {% block main_page %}
+        {% endblock %}
+
+        {# The website footer #}
+        {% block footer %}
+        {% endblock %}
+    </body>
+</html>
