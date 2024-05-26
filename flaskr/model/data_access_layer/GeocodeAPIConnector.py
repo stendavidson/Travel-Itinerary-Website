@@ -40,7 +40,7 @@ class GeocodeApiConnector :
         """
 
         # Input validation
-        if not isinstance(location, str) :
+        if (not isinstance(location, str)) :
 
             raise TypeError("Invalid input parameters: location => str and lang => str.")
 

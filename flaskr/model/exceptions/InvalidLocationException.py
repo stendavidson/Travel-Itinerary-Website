@@ -1,8 +1,8 @@
 
 class InvalidLocationException(Exception) :
     """
-    This exception class is a custom class, specific to the ItineraryConnector
-    class - and is raised when the coordinates do not exist.    
+    This exception class is a custom exception class and is raised when the 
+    coordinates do not exist.    
     """
 
     def __init__(self, coordinates : tuple[float, float]) -> None:

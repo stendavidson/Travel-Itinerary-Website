@@ -1,6 +1,7 @@
 import requests
 from threading import Thread, Lock
 
+from flaskr.model.exceptions.InvalidUnitException import InvalidUnitException
 from flaskr.model.exceptions.WeatherRequestException import WeatherRequestException
 from flaskr.model.exceptions.InvalidLocationException import InvalidLocationException
 from flaskr.model.Weather import Weather
@@ -41,16 +42,29 @@ class WeatherAPIConnector :
             Weather: A Weather object encapsulating the Weather data retrieved from the api.
         """
         
+    
         # Raise TypeError for invalid input type
-        if (not isinstance(latitude, float) or (not isinstance(longitude, float))) :
+        if (not isinstance(latitude, float)) or (not isinstance(longitude, float)) :
 
-            raise TypeError("Invalid argument, coordinates parameter must be of type tuple[float, float].")
+            raise TypeError("The latitudes and longitudes must be valid numerical values (floats).")
         
 
         # Coordinates are validated
         if latitude < -90 or latitude > 90 or  longitude < -180  or longitude > 180 :
 
             raise InvalidLocationException((latitude, longitude))
+        
+
+        # Input units validation
+        if not isinstance(units, str) :
+
+            raise TypeError("Invalid argument, the units value should be a string.")        
+        
+
+        # Unit type is validated
+        if units not in {"metric", "imperial"} :
+
+            raise InvalidUnitException(units)
         
 
         # The request is sent
@@ -99,22 +113,67 @@ class WeatherAPIConnector :
     
 
 
-    def bulk_weather(self, coordinates : list[tuple[float, float]], units : str = "metric") -> list[Weather]:
+    def bulk_weather(self, latitudes : list[float], longitudes : list[float], units : str = "metric") -> list[Weather]:
         """
         This method retrieves the weather data corresponding to a list of coordinates. This
         method utilizes threading to perform a bulk request.
 
         Parameters:
-            coordinates (list[tuple[float, flaot]]): a list of coordinates.
+            latitudes (list[float]): a list of latitudes
+            longitudes (list[float]): a list of longitudes
             units (str): an optional paramter to set the units, "metric" by default.
 
         Returns:
             list[Weather]: A list of Weather objects encapsulating the weather data retrieved
             from the api.
         """
+
+
+        # Raise TypeError for invalid input type
+        if (not isinstance(latitudes, list)) or (not isinstance(longitudes, list)) :
+
+            raise TypeError("Invalid parameters, a list of latitudes and a list of longitudes" +\
+                            " is required.")
         
+
+        # Raise ValueError when the number of latitude and longitude values is unequal.
+        if len(latitudes) != len(longitudes) :
+
+            raise ValueError("Invalid parameters, the number of latitude and longitude values" +\
+                             " must be the same.")
+
+
+        # Raise TypeError for invalid input type
+        for i in range(len(latitudes)) :
+
+            if (not isinstance(latitudes[i], float)) or (not isinstance(longitudes[i], float)) :
+
+                raise TypeError("The latitudes and longitudes must be valid numerical values (floats).")
+        
+
+        # Raise InvalidLocationException if the coordinates are invalid
+        for i in range(len(latitudes)) :
+
+            if latitudes[i] < -90 or latitudes[i] > 90 or longitudes[i] < -180  or longitudes[i] > 180 :
+
+                raise InvalidLocationException((latitudes[i], longitudes[i]))
+        
+
+        # Input units validation
+        if (not isinstance(units, str)) :
+
+            raise TypeError("Invalid argument, the units value should be a string.")
+        
+
+        # Unit type is validated
+        if units not in {"metric", "imperial"} :
+
+            raise InvalidUnitException(units)
+        
+
         # The variable shared between threads - to stored weather data
-        weather_list = [None for i in coordinates]
+        weather_list = [None for i in latitudes]
+
 
         # This function requests the data and then safely allocates the result to a shared
         # variable that is mutex locked.
@@ -128,6 +187,7 @@ class WeatherAPIConnector :
 
                 weather_list[pos] = weather
 
+
         # A container for the threads.
         threads = []
 
@@ -135,13 +195,13 @@ class WeatherAPIConnector :
         thread_lock = Lock()
 
         # Create threads
-        for i in range(len(coordinates)) :
+        for i in range(len(latitudes)) :
 
             threads.append(Thread(target=threaded_weather, kwargs={
                 "pos" : i, 
                 "thread_lock" : thread_lock, 
-                "latitude" : coordinates[i][0], 
-                "longitude" : coordinates[i][1], 
+                "latitude" : latitudes[i], 
+                "longitude" : longitudes[i], 
                 "units" : units
             }))
 
@@ -149,7 +209,7 @@ class WeatherAPIConnector :
 
 
         # Join the threads to the main thread
-        for j in range(len(coordinates)) :
+        for j in range(len(latitudes)) :
 
             threads[j].join()
 

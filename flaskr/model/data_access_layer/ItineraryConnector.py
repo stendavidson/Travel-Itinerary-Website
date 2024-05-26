@@ -105,7 +105,7 @@ class ItineraryConnector():
                 latitude = float(data[1])
                 longitude = float(data[2])
 
-            except TypeError as e :
+            except ValueError as e :
     
                 raise ItineraryRequestException("The stored itinerary has been corrupted.")
 

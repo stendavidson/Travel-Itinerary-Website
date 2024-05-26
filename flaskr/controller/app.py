@@ -1,3 +1,4 @@
+import logging
 from flask import Flask, Response, request, redirect, render_template
 from json import dumps
 from os.path import exists
@@ -10,6 +11,7 @@ from flaskr.model.exceptions.ItineraryRequestException import ItineraryRequestEx
 from flaskr.model.exceptions.RepeatLocationException import RepeatLocationException
 from flaskr.model.exceptions.LocationKeyException import LocationKeyException
 from flaskr.model.exceptions.WeatherRequestException import WeatherRequestException
+from flaskr.model.exceptions.InvalidUnitException import InvalidUnitException
 from flaskr.model.exceptions.GeocodeRequestException import GeocodeRequestException
 from flaskr.model.exceptions.InvalidLocationException import InvalidLocationException
 from flaskr.controller.utils import error_response
@@ -158,6 +160,24 @@ def invalid_location_handler(e : InvalidLocationException) -> Response:
 
 
 
+@app.errorhandler(InvalidUnitException)
+def weather_request_handler(e : InvalidUnitException) -> Response:
+
+    """
+    This function handles exceptions thrown when an inalid unit type is
+    submitted.
+
+    Parameters:
+        e (InvalidUnitException): Custom exception class.
+
+    Returns: 
+        Response: a json encoded HTTP 400 response containing an error message.
+    """
+
+    return error_response(e.__str__(), 400)
+
+
+
 @app.errorhandler(WeatherRequestException)
 def weather_request_handler(e : WeatherRequestException) -> Response:
 
@@ -173,6 +193,7 @@ def weather_request_handler(e : WeatherRequestException) -> Response:
     """
 
     return error_response(e.__str__(), 500)
+
 
 
 
@@ -198,7 +219,7 @@ def geocode_request_handler(e : GeocodeRequestException) -> Response:
 def parameter_handler(e : TypeError) -> Response:
 
     """
-    This function handles TyperErrors thrown  when invalid data types are passed 
+    This function handles TypeErrors thrown  when invalid data types are passed 
     to various model methods.
 
     Parameters:
@@ -212,21 +233,49 @@ def parameter_handler(e : TypeError) -> Response:
 
 
 
+@app.errorhandler(ValueError)
+def parameter_handler(e : ValueError) -> Response:
+
+    """
+    This function handles ValueErrors thrown when the correct argument type is
+    passed but the value is incorrect.
+
+    Parameters:
+        e (ValueError): The error being caught.
+
+    Returns: 
+        Response: a json encoded HTTP 400 response containing an error message.
+    """
+
+    return error_response(e.__str__(), 400)
+
+
+
 @app.errorhandler(404)
 def error_404_handler(e : int) -> Response:
 
     """
-    This function handles HTTP 404 Page Not Found Errors. Since this is likely
-    to be raised outside the context of an API request, the response is a html page.
+    This function handles HTTP 404 Resource Not Found Errors. Since this is can be
+    raised in the context of both the web app and the API an appropriate response
+    is returned depending on the url resource being accessed.
 
     Parameters:
         e (int): The HTTP error code.
 
     Returns: 
-        Response: a generic html "page not found" error page.
+        Response: a json error or html error page.
     """
 
-    return Response(render_template("errors/error-404.html"), 404)
+    # By default a "page not found" page is displayed
+    response = Response(render_template("errors/error-404.html"), 404)
+
+    # Conditional handles non-existent api endpoints
+    if request.base_url[:20] == "http://localhost/api" :
+
+        response = error_response("This API endpoint does not exist", 404)
+
+    return response
+
 
 
 @app.errorhandler(Exception)
@@ -242,6 +291,8 @@ def generic_error_handler(e : Exception) -> Response:
     Returns: 
         Response: a generic html error page.
     """
+
+    print(str(e))
 
     return Response(render_template("errors/error-500.html"), 500)
 
@@ -381,8 +432,7 @@ def create_itinerary()  -> Response:
     data = request.json
 
     # Request validation
-    if ("name" not in data) or ("coordinates" not in data) or (not isinstance(data["name"], str)) \
-       or (not isinstance(data["coordinates"], list)):
+    if ("name" not in data) or ("coordinates" not in data):
         
         response = error_response("""Invalid request, the name (string) and itinerary (list) 
                                   components are both required.""", 400)
@@ -474,38 +524,35 @@ def get_weather()  -> Response:
     response = None
 
     # Request validation
-    if len(latitudes) != len(longitudes) or len(latitudes) == 0 :
+    if latitudes == None or len(latitudes) == 0 or len(longitudes) == 0:
         
-        response = error_response("""Invalid request, the requests 
-                                  must have one or more coordinate pair.""", 400)
-
+        response = error_response("Invalid request, the requests " + \
+                                   "must have one or more coordinate pairs.", 400)
+        
     else :
 
         # Weather data is retrieved from the OpenWeather API
         connector = WeatherAPIConnector(OPEN_WEATHER_KEY)
 
-        # Input validation
+        # The input parameters are safely cast to float values
         try:
 
             latitudes = [float(i) for i in latitudes]
             longitudes = [float(i) for i in longitudes]
 
-        except TypeError as e :
+        except ValueError as e :
 
             raise TypeError("The latitudes and longitudes must be valid numerical values (floats).")
-        
-
-        coordinates = list(zip(latitudes, longitudes))
-
+            
 
         # Threaded bulk request is used when more than coordinate is requested
-        if(len(coordinates)) > 1 :
+        if len(latitudes) > 1 or len(longitudes) > 1 :
             
-            response = Response(dumps({"weather-data" : [i.__dict__ for i in connector.bulk_weather(coordinates, units)]}), 200)
+            response = Response(dumps({"weather-data" : [i.__dict__ for i in connector.bulk_weather(latitudes, longitudes, units)]}), 200)
             
         else :
 
-            response = Response(dumps({"weather-data" : [connector.current_weather(coordinates[0][0], coordinates[0][1], units).__dict__]}), 200)
+            response = Response(dumps({"weather-data" : [connector.current_weather(latitudes[0], longitudes[0], units).__dict__]}), 200)
 
     # Set the response headers
     response.access_control_allow_origin = "*"
@@ -572,4 +619,7 @@ def itinerary_router() -> str:
 # Conditionally start Flask application
 if __name__ == "__main__" :
 
-    app.run(host="localhost", port=80)
+    import logging
+    app.logger.setLevel(logging.INFO)
+
+    app.run(host="localhost", port=80, debug=True)
