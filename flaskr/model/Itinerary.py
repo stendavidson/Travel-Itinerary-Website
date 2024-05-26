@@ -84,7 +84,6 @@ class Itinerary :
             self.locations[location] = len(self.coordinates)
 
 
-    # This method allows the center of the itinerary to be calculated
     def find_center(self)  -> tuple[float, float]:
         """
         This method calculates the center point of all the coordinates in the itinerary,

@@ -67,7 +67,7 @@ class GeocodeApiConnector :
             raise GeocodeRequestException()
         
         
-        coordinates = (0, 0)
+        coordinates = ()
 
         # Results validation
         if json_data["results"] != [] :

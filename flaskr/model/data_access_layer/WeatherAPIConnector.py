@@ -171,7 +171,7 @@ class WeatherAPIConnector :
             raise InvalidUnitException(units)
         
 
-        # The variable shared between threads - to stored weather data
+        # The variable shared between threads - to store weather data
         weather_list = [None for i in latitudes]
 
 

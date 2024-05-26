@@ -151,7 +151,9 @@ function addMarkers(coordinates, weather){
 //////////////////////////////////////////////////////////////////////////
 
 
-// This function retrieves a list of itinerary names from the api
+/**
+ * This function retrieves a list of itinerary names from the API
+ */
 async function getItineraryNames(){
 
     // A list of itinerary names are retrieved via api
@@ -168,7 +170,12 @@ async function getItineraryNames(){
 }
 
 
-// This function retrieves itinerary from the api
+/**
+ * This function retrieves itinerary from the API
+ * 
+ * @param {string} name The name of the itinerary to retrieve.
+ * 
+ */ 
 async function getItinerary(name){
 
     // Input Validation
@@ -190,12 +197,18 @@ async function getItinerary(name){
 }
 
 
-// This function creates the itinerary and saves it via the api
+/**
+ * This function creates a new itinerary and saves it via the API
+ * 
+ * @param {string} name the name of the itinerary being created.
+ * 
+ * @param {Array} coordinates an array of locations and coordinates.
+ */ 
 async function createItinerary(name, coordinates){
 
     // Input Validation
     if(typeof(name) != "string" || !(coordinates instanceof Array)){
-        throw new TypeError("Invalid input parameters: name => string and itinerary => Array.");
+        throw new TypeError("Invalid input parameters: the name must be a string and the coordinates an array.");
     }
 
     // The body of the POST request is generated
@@ -220,12 +233,16 @@ async function createItinerary(name, coordinates){
 }
 
 
-// This function deletes an itinerary using the itineraries name.
+/**
+ * This function deletes an itinerary using the itineraries name.
+ * 
+ * @param {string} name the name of the intinerary to be deleted.
+ */
 async function deleteItinerary(name){
 
     // Input Validation
     if(typeof(name) != "string"){
-        throw new TypeError("Invalid input parameter: name => string.");
+        throw new TypeError("Invalid input parameter: the name must be a string.");
     }
 
     // The itinerary is deleted
@@ -244,7 +261,12 @@ async function deleteItinerary(name){
 //////////////////////////////////////////////////////////////////////////
 
 
-// This function retrieves the weather for all the input data points.
+/**
+ * This function retrieves the weather data for all the input data points.
+ * 
+ * @param {Array} coordinates The coordinates by which the weather data
+ * is being retrieved. The format here is [[lat, lng]].
+ */
 async function getWeather(coordinates){
 
     // Input Validation
@@ -279,7 +301,11 @@ async function getWeather(coordinates){
 //////////////////////////////////////////////////////////////////////////
 
 
-// This function retrieves the coordinates for a plain text location name.
+/**
+ * This function retrieves the coordinates for a plain text location name.
+ * 
+ * @param {string} location The plain text location to retrieve coordinates for.
+ */
 async function getCoordinates(location){
 
     // Input Validation
@@ -299,8 +325,6 @@ async function getCoordinates(location){
 
     return data["coordinates"]
 }
-
-window.getCoordinates = getCoordinates;
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -377,8 +401,8 @@ async function addCoords(id){
     const latitude = document.getElementById(`location-lat-${id}`);
     const longitude = document.getElementById(`location-lng-${id}`);
 
-    // Set default values
-    let coordinates = [0,0];
+    // Set defaults
+    let coordinates = Array();
     error.innerText = "";
 
     // Coordinates are retrieved and exceptions handled
@@ -388,21 +412,30 @@ async function addCoords(id){
         error.innerText = e.message;
     }
 
-    // Coordinates are validated and errors displayed appropriately.
-    if(coordinates[0] < 47.5554486 || coordinates[0] > 61.5471111 
-        || coordinates[1] < -18.5319589 || coordinates[1] > 9.5844157) {
-        
-        coordinates = [0,0];
-        error.innerText = "This location is not within the UK.";
-    }
+    // If valid coordinates are returned display to screen if they are valid
+    // else an error message is displayed
+    if(coordinates.length == 2){
 
-    // Conditional displays error
-    if(error.innerText != ""){
+        latitude.value = coordinates[0];
+        longitude.value = coordinates[1];
+
+        // Coordinates are validated and errors displayed appropriately.
+        if(coordinates[0] < 47.5554486 || coordinates[0] > 61.5471111 
+            || coordinates[1] < -18.5319589 || coordinates[1] > 9.5844157) {
+            
+            error.innerText = "This location is not within the UK";
+        }
+
+        // Conditional displays error
+        if(error.innerText != ""){            
+            error.style.display = "block";
+        }else{
+            error.style.display = "none";
+        }
+    }else{
+        error.innerText = "This location is not within the UK";
         error.style.display = "block";
     }
-
-    latitude.value = coordinates[0];
-    longitude.value = coordinates[1];
 }
 
 window.addCoords = addCoords;

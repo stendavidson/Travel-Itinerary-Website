@@ -292,8 +292,6 @@ def generic_error_handler(e : Exception) -> Response:
         Response: a generic html error page.
     """
 
-    print(str(e))
-
     return Response(render_template("errors/error-500.html"), 500)
 
 
@@ -434,8 +432,8 @@ def create_itinerary()  -> Response:
     # Request validation
     if ("name" not in data) or ("coordinates" not in data):
         
-        response = error_response("""Invalid request, the name (string) and itinerary (list) 
-                                  components are both required.""", 400)
+        response = error_response("Invalid request, the name (string)" +\
+                                  " and itinerary (list) components are both required.", 400)
 
     else :
 
@@ -526,7 +524,7 @@ def get_weather()  -> Response:
     # Request validation
     if latitudes == None or len(latitudes) == 0 or len(longitudes) == 0:
         
-        response = error_response("Invalid request, the requests " + \
+        response = error_response("Invalid request, the request " + \
                                    "must have one or more coordinate pairs.", 400)
         
     else :
@@ -582,7 +580,6 @@ def domain_router() -> Response:
     return redirect("/index")
 
 
-# This function routes the user to the main / home page of the website.
 @app.route("/index", methods=["GET", "POST"])
 def homepage_router() -> str:
 
@@ -593,10 +590,11 @@ def homepage_router() -> str:
         str: a html page to be rendered.
     """
 
+    # The google API KEY is passed as a parameter to prevent it being hard coded
+    # in the JavaScript.
     return render_template("index.html", api_key=GOOGLE_KEY)
 
 
-# This function routes the user to the main / home page of the website.
 @app.route("/create-itinerary", methods=["GET", "POST"])
 def itinerary_router() -> str:
 

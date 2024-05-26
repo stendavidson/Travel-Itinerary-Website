@@ -76,7 +76,7 @@ class ItineraryConnector():
         # The file path is validated
         if not exists(file_path) :
 
-            raise ItineraryRequestException("This itinerary can no longer be found, please reload the page.")
+            raise ItineraryRequestException("This itinerary can no longer be found")
         
         # The file is read
         with open(file_path, "r") as file :
@@ -94,7 +94,7 @@ class ItineraryConnector():
             # The data is validated
             if len(data) != 3 :
 
-                raise ItineraryRequestException("The stored itinerary has been corrupted.")
+                raise ItineraryRequestException("The stored itinerary has been corrupted")
 
             latitude = 0
             longitude = 0
@@ -107,7 +107,7 @@ class ItineraryConnector():
 
             except ValueError as e :
     
-                raise ItineraryRequestException("The stored itinerary has been corrupted.")
+                raise ItineraryRequestException("The stored itinerary has been corrupted")
 
             
             itinerary[data[0]] = (latitude, longitude)
@@ -149,7 +149,7 @@ class ItineraryConnector():
 
         except OSError as e :
 
-            raise ItineraryRequestException("The server experienced an error while saving, please try again.")
+            raise ItineraryRequestException("The server experienced an error while saving, please try again")
         
 
     # This method deletes a given itinerary
@@ -172,7 +172,7 @@ class ItineraryConnector():
         # The file path is validated
         if not exists(file_path) :
 
-            raise ItineraryRequestException("This itinerary can no longer be found, please reload the page.")
+            raise ItineraryRequestException("This itinerary can no longer be found, please reload the page")
         
         # The file is deleted
         try :
@@ -181,7 +181,7 @@ class ItineraryConnector():
 
         except OSError as e :
 
-            raise ItineraryRequestException("The server experienced an error while deleting this resource.")
+            raise ItineraryRequestException("The server experienced an error while deleting this resource")
             
 
             
