@@ -617,7 +617,4 @@ def itinerary_router() -> str:
 # Conditionally start Flask application
 if __name__ == "__main__" :
 
-    import logging
-    app.logger.setLevel(logging.INFO)
-
-    app.run(host="localhost", port=80, debug=True)
+    app.run(host="localhost", port=80)
