@@ -1,4 +1,4 @@
-# An English Travel Itinerary Website
+# An England Travel Itinerary Website
 
 ## Author
 Sten Healey
