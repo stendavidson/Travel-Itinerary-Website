@@ -1,4 +1,4 @@
-# England's Trails and Tales - A Travel Itinerary Website
+# An English Travel Itinerary Website
 
 ## Author
 Sten Healey
